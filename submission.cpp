@@ -366,13 +366,38 @@ bool findKeyAsDifference(FILE *fp, long long *data, int numLines) {
     
     if (fp) fprintf(destFP, "\nRunning time: %lld\n", count);
     printf("\nRunning time: %lld\n", count);
+    printf("for n= %d, n^2 log n: %lld\n", numLines, (long long)(numLines * numLines * log2(numLines)));
 
     return found;
 }
 
 void testFindKeyAsDifference() {
+    printf("Testing findKeyAsDifference function:\n");
     long long testData1[] = {14, 89, 18, 105, 23, 4, 35, 99, 67, 76, 198, 20, 5, 38, 55, 2, 30, 19, 487, 11, 40, 10, 13, 27, 22, 45, 37, 231, 46, 17, 731, 49, 167, 234, 59, 91, 179, 201};
     int size1 = sizeof(testData1) / sizeof(testData1[0]);
     findKeyAsDifference(NULL, testData1, size1);
+
+
+    printf("-----------\n");
+    long long testData2[] = {14, 28};
+    int size2 = sizeof(testData2) / sizeof(testData2[0]);
+    findKeyAsDifference(NULL, testData2, size2);
+
+    printf("-----------\n");
+    long long testData3[] = {14, 14, 0};
+    int size3 = sizeof(testData3) / sizeof(testData3[0]);
+    findKeyAsDifference(NULL, testData3, size3);
+
+    printf("-----------\n");
+    long long testData4[] = {1, 2, 3, 4, 5};
+    int size4 = sizeof(testData4) / sizeof(testData4[0]);
+    findKeyAsDifference(NULL, testData4, size4);
+
+    printf("-----------\n");
+    long long testData5[] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31};
+    int worstCaseSize = sizeof(testData5) / sizeof(testData5[0]);
+    printf("Testing with %d prime numbers (should find few/no matches):\n", worstCaseSize);
+    findKeyAsDifference(NULL, testData5, worstCaseSize);
+
 }
 
