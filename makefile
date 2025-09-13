@@ -11,7 +11,7 @@ submission.o: submission.cpp
 	$(CXX) $(CXXFLAGS) -c submission.cpp
 
 run: clean submission
-	./submission input.txt output.txt
+	./submission test_input.txt test_output.txt
 
 clean:
 	rm -f *.o submission
