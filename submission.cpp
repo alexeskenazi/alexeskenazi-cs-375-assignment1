@@ -27,7 +27,7 @@ long long numLines, *data;
 
 int main(int argc, char *argv[]) {
 
-  // TestSortABCarray();
+  TestSortABCarray();
 
   int i;
   char str[BUFSIZE];
@@ -179,6 +179,9 @@ char * sortABCarray(char *str, int len) {
 void TestSortABCarray() {
     // Representative, non-duplicative set
 
+    char test0[]  = "";
+    char test0_expected[]  = "";
+
     char test1[]  = "ABACBACACBBAC";
     char test1_expected[]  = "AAAAABBBBCCCC";
 
@@ -224,6 +227,9 @@ void TestSortABCarray() {
 
     char test19[] = "AAAAABBBCCC";
     char test19_expected[] = "AAAAABBBCCC";
+
+    sortABCarray(test0, strlen(test0));
+    assert(strcmp(test0, test0_expected) == 0);
 
     sortABCarray(test1, strlen(test1));
     assert(strcmp(test1, test1_expected) == 0);
