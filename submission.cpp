@@ -29,8 +29,8 @@ long long numLines, *data;
 
 int main(int argc, char *argv[]) {
 
-  testSortABCarray();
-  testFindKeyAsDifference();
+  // testSortABCarray();
+  // testFindKeyAsDifference();
 
   int i;
   char str[BUFSIZE];
@@ -70,6 +70,7 @@ int main(int argc, char *argv[]) {
   // while the read input is not empty or "//Part B.2" read and sort
 
   fprintf(destFP, "//Part B.1 \n\n");
+  printf("//Part B.1 \n\n");
   
   while(!feof(srcFP)) {
 
@@ -118,11 +119,12 @@ int main(int argc, char *argv[]) {
 
     // Read a number from the input file
     sscanf(str, "%lld", &(data[dataIndex]));
-    printf("Read data[%d]=%lld\n", dataIndex, data[dataIndex]);
+    // printf("Read data[%d]=%lld\n", dataIndex, data[dataIndex]);
     dataIndex++;
   }
 
   fprintf(destFP, "\n\n// Part B.2\n\n");
+  printf("\n\n// Part B.2\n\n");
 
   findKeyAsDifference(destFP, data, dataIndex);
 
@@ -179,7 +181,7 @@ char * sortABCarray(FILE *fp, char *str, int len) {
     int mid = 0;       
     int high = len - 1;  
 
-    printf("Initial data: %s\n", str);
+    // printf("Initial data: %s\n", str);
 
     while (mid <= high) {  
         count++;
@@ -195,9 +197,11 @@ char * sortABCarray(FILE *fp, char *str, int len) {
                 break;
         }
     }
-    if(fp) fprintf(destFP, "%s\n", str);
-    if(fp) fprintf(destFP, "\n");
+    if(fp) fprintf(destFP, "%s\n\n", str);
     if(fp) fprintf(destFP, "Running time: %lld\n", count);
+
+    printf("%s\n\n", str);
+    printf("Running time: %lld\n", count);
     return str;
 }
 
@@ -345,8 +349,8 @@ bool findKeyAsDifference(FILE *fp, long long *data, int numLines) {
       }
     }
 
-    if(fp) fprintf(destFP, "\n");
-    if(fp) fprintf(destFP, "Running time: %lld\n", count);
+    if(fp) fprintf(destFP, "\nRunning time: %lld\n", count);
+    printf("\nRunning time: %lld\n", count);
 
     return found;
 }
