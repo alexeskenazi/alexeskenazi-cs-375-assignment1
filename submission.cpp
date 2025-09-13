@@ -185,7 +185,7 @@ char * sortABCarray(FILE *fp, char *str, int len) {
     int mid = 0;       
     int high = len - 1;  
 
-    // printf("Initial data: %s\n", str);
+    printf("I %s\n", str);
 
     while (mid <= high) {  
         count++;
@@ -204,7 +204,7 @@ char * sortABCarray(FILE *fp, char *str, int len) {
     if(fp) fprintf(destFP, "%s\n\n", str);
     if(fp) fprintf(destFP, "Running time: %lld\n", count);
 
-    printf("%s\n\n", str);
+    printf("O:%s\n\n", str);
     printf("Running time: %lld\n", count);
     return str;
 }
