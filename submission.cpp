@@ -15,15 +15,13 @@ using namespace std;
 
 long long findNumLines(FILE *fp);
 
-int writeDestFile(FILE *fp);
+char * sortABCarray(FILE *fp, char *data, int numLines);
 
-char * sortABCarray(char *data, int numLines);
-
-void TestSortABCarray();
+void testSortABCarray();
 
 void testFindKeyAsDifference();
 
-void testFindKeyAsDifference();
+bool findKeyAsDifference(FILE *fp, long long *data, int numLines);
 
 
 FILE *srcFP, *destFP;
@@ -31,7 +29,7 @@ long long numLines, *data;
 
 int main(int argc, char *argv[]) {
 
-  // TestSortABCarray();
+  testSortABCarray();
   testFindKeyAsDifference();
 
   int i;
@@ -44,6 +42,11 @@ int main(int argc, char *argv[]) {
   
   if((srcFP =fopen(argv[1], "r")) == NULL) {
     perror("Error opening input file");
+    exit(0);
+  }
+
+  if((destFP = fopen(argv[2], "w")) == NULL) {
+    perror("Error opening output file");
     exit(0);
   }
   
@@ -65,6 +68,8 @@ int main(int argc, char *argv[]) {
 
 
   // while the read input is not empty or "//Part B.2" read and sort
+
+  fprintf(destFP, "//Part B.1 \n\n");
   
   while(!feof(srcFP)) {
 
@@ -72,7 +77,7 @@ int main(int argc, char *argv[]) {
 
     int len = strlen(str);
     if (len > 0) { 
-      sortABCarray(str, len);
+      sortABCarray(destFP, str, len);
     }
     
     fgets(str, BUFSIZE, srcFP);
@@ -117,30 +122,14 @@ int main(int argc, char *argv[]) {
     dataIndex++;
   }
 
+  fprintf(destFP, "\n\n// Part B.2\n\n");
 
-  if((destFP = fopen(argv[2], "w")) == NULL) {
-    perror("Error opening output file");
-    exit(0);
-  }
-
-  if((destFP = fopen(argv[2], "w")) == NULL) {
-    perror("Error opening output file");
-    exit(0);
-  }
-
-  
-  writeDestFile(destFP);
+  findKeyAsDifference(destFP, data, dataIndex);
 
   fclose(srcFP);
   fclose(destFP);
 }
 
-int writeDestFile(FILE *fp) {
-  long long i;
-  for(i = 0; i < numLines; i++)
-    fprintf(fp, "%lld\n", data[i]*data[i]);
-  return 0;
-}
 
 //returns file size as number of lines in the file
 long long findNumLines(FILE *fp) {
@@ -178,7 +167,8 @@ void swapChars(char &x, char &y) {
     y = temp; 
 }
 
-char * sortABCarray(char *str, int len) {
+char * sortABCarray(FILE *fp, char *str, int len) {
+    long long count = 0;
     // Remove newline if present
     if (len > 0 && str[len-1] == '\n') {
         str[len-1] = '\0';
@@ -192,6 +182,7 @@ char * sortABCarray(char *str, int len) {
     printf("Initial data: %s\n", str);
 
     while (mid <= high) {  
+        count++;
         switch (str[mid]) {
             case 'A':
                 swapChars(str[low++], str[mid++]);
@@ -200,16 +191,18 @@ char * sortABCarray(char *str, int len) {
                 mid++;
                 break;
             case 'C':
-                swapChars(str[mid], str[high--]);  
+                swapChars(str[mid], str[high--]);
                 break;
         }
     }
-    printf("Sorted data: %s\n", str);
+    if(fp) fprintf(destFP, "%s\n", str);
+    if(fp) fprintf(destFP, "\n");
+    if(fp) fprintf(destFP, "Running time: %lld\n", count);
     return str;
 }
 
 
-void TestSortABCarray() {
+void testSortABCarray() {
     // Representative, non-duplicative set
 
     char test0[]  = "";
@@ -261,53 +254,53 @@ void TestSortABCarray() {
     char test19[] = "AAAAABBBCCC";
     char test19_expected[] = "AAAAABBBCCC";
 
-    sortABCarray(test0, strlen(test0));
+    sortABCarray( NULL, test0, strlen(test0));
     assert(strcmp(test0, test0_expected) == 0);
 
-    sortABCarray(test1, strlen(test1));
+    sortABCarray( NULL, test1, strlen(test1));
     assert(strcmp(test1, test1_expected) == 0);
 
-    sortABCarray(test2, strlen(test2));
+    sortABCarray( NULL, test2, strlen(test2));
     assert(strcmp(test2, test2_expected) == 0);
-    sortABCarray(test3, strlen(test3));
+    sortABCarray( NULL, test3, strlen(test3));
     assert(strcmp(test3, test3_expected) == 0);
-    sortABCarray(test4, strlen(test4));
+    sortABCarray( NULL, test4, strlen(test4));
     assert(strcmp(test4, test4_expected) == 0);
 
-    sortABCarray(test5, strlen(test5));
+    sortABCarray( NULL, test5, strlen(test5));
     assert(strcmp(test5, test5_expected) == 0);
-    sortABCarray(test6, strlen(test6));
+    sortABCarray( NULL, test6, strlen(test6));
     assert(strcmp(test6, test6_expected) == 0);
-    sortABCarray(test7, strlen(test7));
+    sortABCarray( NULL, test7, strlen(test7));
     assert(strcmp(test7, test7_expected) == 0);
-    sortABCarray(test8, strlen(test8));
+    sortABCarray( NULL, test8, strlen(test8));
     assert(strcmp(test8, test8_expected) == 0);
 
-    sortABCarray(test9, strlen(test9));
+    sortABCarray( NULL, test9, strlen(test9));
     assert(strcmp(test9, test9_expected) == 0);
-    sortABCarray(test10, strlen(test10));
+    sortABCarray( NULL, test10, strlen(test10));
     assert(strcmp(test10, test10_expected) == 0);
-    sortABCarray(test11, strlen(test11));
+    sortABCarray( NULL, test11, strlen(test11));
     assert(strcmp(test11, test11_expected) == 0);
 
-    sortABCarray(test12, strlen(test12));
+    sortABCarray( NULL, test12, strlen(test12));
     assert(strcmp(test12, test12_expected) == 0);
-    sortABCarray(test13, strlen(test13));
+    sortABCarray( NULL, test13, strlen(test13));
     assert(strcmp(test13, test13_expected) == 0);
 
-    sortABCarray(test14, strlen(test14));
+    sortABCarray( NULL, test14, strlen(test14));
     assert(strcmp(test14, test14_expected) == 0);
-    sortABCarray(test15, strlen(test15));
+    sortABCarray( NULL, test15, strlen(test15));
     assert(strcmp(test15, test15_expected) == 0);
-    sortABCarray(test16, strlen(test16));
+    sortABCarray( NULL, test16, strlen(test16));
     assert(strcmp(test16, test16_expected) == 0);
 
-    sortABCarray(test17, strlen(test17));
+    sortABCarray( NULL, test17, strlen(test17));
     assert(strcmp(test17, test17_expected) == 0);
-    sortABCarray(test18, strlen(test18));
+    sortABCarray( NULL, test18, strlen(test18));
     assert(strcmp(test18, test18_expected) == 0);
 
-    sortABCarray(test19, strlen(test19));
+    sortABCarray( NULL, test19, strlen(test19));
     assert(strcmp(test19, test19_expected) == 0);
 }
 
@@ -324,8 +317,9 @@ void TestSortABCarray() {
 // [14,  89,  18,  105,  23,   4,   35,   99,   67,  76,  198,   20,   5,  38,   55,   2,  30,   19,   487,  11,  40,  10,  13,  27,  22,   45,  37, 231, 46, 17,  731, 49,  167, 234, 59, 91, 179, 201]
 
 
-bool findKeyAsDifference(long long *data, int numLines) {
+bool findKeyAsDifference(FILE *fp, long long *data, int numLines) {
     bool found = false;
+    long long count = 0;
 
     for (int i = 0; i < numLines; i++) {
     
@@ -336,21 +330,30 @@ bool findKeyAsDifference(long long *data, int numLines) {
           long long diff = data[i] - data[j];
     
           for (int k = 0; k < numLines; k++) {
+            count++;
     
             if (k != i && k != j && data[k] == diff) {
-              printf("Found: %lld = %lld - %lld\n", diff, data[i], data[j]);
+
+              if(fp) fprintf(fp,"%lld-%lld=%lld\n", data[i], data[j], diff);
+              printf("%lld-%lld=%lld\n", data[i], data[j], diff);
+              
               found = true;
+    
             }
           }
         }
       }
     }
+
+    if(fp) fprintf(destFP, "\n");
+    if(fp) fprintf(destFP, "Running time: %lld\n", count);
+
     return found;
 }
 
 void testFindKeyAsDifference() {
     long long testData1[] = {14, 89, 18, 105, 23, 4, 35, 99, 67, 76, 198, 20, 5, 38, 55, 2, 30, 19, 487, 11, 40, 10, 13, 27, 22, 45, 37, 231, 46, 17, 731, 49, 167, 234, 59, 91, 179, 201};
     int size1 = sizeof(testData1) / sizeof(testData1[0]);
-    findKeyAsDifference(testData1, size1);
+    findKeyAsDifference(NULL, testData1, size1);
 }
 
