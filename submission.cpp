@@ -27,7 +27,7 @@ long long numLines, *data;
 
 int main(int argc, char *argv[]) {
 
-  TestSortABCarray();
+  // TestSortABCarray();
 
   int i;
   char str[BUFSIZE];
@@ -58,7 +58,6 @@ int main(int argc, char *argv[]) {
     break;
   }
 
-  // 
 
   // while the read input is not empty or "//Part B.2" read and sort
   
@@ -86,9 +85,38 @@ int main(int argc, char *argv[]) {
 
   }
 
-
+  // We are at the beginning of Part B.2
   data = (long long *) malloc(numLines * sizeof(long long));
+  int dataIndex = 0;
 
+
+  // Read the data from the input file
+  for(i=0; i<numLines; i++) {
+
+    fgets(str, 100, srcFP);
+
+    // Skip blank lines and lines with // only
+    if((str[0] == '\n') || (str[0] == ' ') || ((str[0] == '/') && (str[1] == '/'))) {
+      i--;
+      continue;
+    }
+
+    // stop eof file
+    if(feof(srcFP)) {
+      break;
+    }
+
+    // Read a number from the input file
+    sscanf(str, "%lld", &(data[dataIndex]));
+    printf("Read data[%d]=%lld\n", dataIndex, data[dataIndex]);
+    dataIndex++;
+  }
+
+
+  if((destFP = fopen(argv[2], "w")) == NULL) {
+    perror("Error opening output file");
+    exit(0);
+  }
 
   if((destFP = fopen(argv[2], "w")) == NULL) {
     perror("Error opening output file");
