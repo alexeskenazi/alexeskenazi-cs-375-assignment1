@@ -20,7 +20,7 @@ run: clean submission
 	./submission input.txt output.txt
 
 test: clean submission
-	./submission test_input.txt test_output.txt test
+	./submission inputFile.txt outputFile.txt test
 
 clean:
 	rm -f *.o submission

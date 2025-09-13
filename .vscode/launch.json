@@ -22,7 +22,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/submission",
-            "args": ["${workspaceFolder}/test_input.txt", "${workspaceFolder}/test_output.txt", "test"],
+            "args": ["${workspaceFolder}/inputFile.txt", "${workspaceFolder}/outputFile.txt", "test"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
