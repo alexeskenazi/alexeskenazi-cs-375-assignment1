@@ -320,8 +320,8 @@ void testSortABCarray() {
 // [14,  89,  18,  105,  23,   4,   35,   99,   67,  76,  198,   20,   5,  38,   55,   2,  30,   19,   487,  11,  40,  10,  13,  27,  22,   45,  37, 231, 46, 17,  731, 49,  167, 234, 59, 91, 179, 201]
 
 
-#include "sort.cpp"
-#include "binary-search.cpp"
+#include "sort.h"
+#include "binary-search.h"
 
 bool findKeyAsDifference(FILE *fp, long long *data, int numLines) {
     bool found = false;

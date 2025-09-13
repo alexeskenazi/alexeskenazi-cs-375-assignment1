@@ -1,5 +1,5 @@
 
-int binarySearch(long long arr[], int size, long long target, long long *operationCount);
+#include "binary-search.h"
 
 long long binarySearchOperations = 0;
 

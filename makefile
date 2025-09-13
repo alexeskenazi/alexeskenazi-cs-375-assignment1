@@ -4,11 +4,17 @@ CXXFLAGS = -Wall -g
 
 all: submission
 
-submission: submission.o 
-	$(CXX) $(CXXFLAGS) submission.o -o submission
+submission: submission.o sort.o binary-search.o
+	$(CXX) $(CXXFLAGS) submission.o sort.o binary-search.o -o submission
 
-submission.o: submission.cpp
+submission.o: submission.cpp sort.h binary-search.h
 	$(CXX) $(CXXFLAGS) -c submission.cpp
+
+sort.o: sort.cpp sort.h
+	$(CXX) $(CXXFLAGS) -c sort.cpp
+
+binary-search.o: binary-search.cpp binary-search.h
+	$(CXX) $(CXXFLAGS) -c binary-search.cpp
 
 run: clean submission
 	./submission test_input.txt test_output.txt

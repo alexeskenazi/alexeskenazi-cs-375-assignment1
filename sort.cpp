@@ -1,8 +1,5 @@
 #include <stdlib.h>
-
-void merge(long long arr[], int left, int mid, int right);
-void mergeSort(long long arr[], int left, int right);
-
+#include "sort.h"
 
 long long mergeSortOperations = 0;
 
