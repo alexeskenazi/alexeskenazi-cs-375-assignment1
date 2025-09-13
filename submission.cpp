@@ -7,8 +7,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <cstring>
+#include <cassert>
 
 using namespace std;
+
+#define BUFSIZE 1000
 
 long long findNumLines(FILE *fp);
 
@@ -16,14 +19,18 @@ int writeDestFile(FILE *fp);
 
 char * sortABCarray(char *data, int numLines);
 
+void TestSortABCarray();
+
 
 FILE *srcFP, *destFP;
 long long numLines, *data;
 
 int main(int argc, char *argv[]) {
 
+  // TestSortABCarray();
+
   int i;
-  char str[1000];
+  char str[BUFSIZE];
 
   if(argc!=3) {
     printf("Usage: progname <input_file> <output_file>");
@@ -37,25 +44,50 @@ int main(int argc, char *argv[]) {
   
   numLines = findNumLines(srcFP); //
   
-  data = (long long *) malloc(numLines * sizeof(long long));
 
+  // Find the fist non-blank line that is not a comment
   for(i=0; i<numLines; i++) {
-    fgets(str, 100, srcFP);
+    fgets(str, BUFSIZE, srcFP);
 
     // Skip blank lines and lines with // only
-    if((str[0] == '\n') || ((str[0] == '/') && (str[1] == '/'))) {
+    if((str[0] == '\n') || (str[0] == ' ') || ((str[0] == '/') && (str[1] == '/'))) {
       i--;
       continue;
     }
 
-    // sscanf(str, "%lld", &(data[i]));
-    // The first line should container the input string for sorting
     break;
   }
 
+  // 
 
-  int len = strlen(str);
-  sortABCarray(str, len);
+  // while the read input is not empty or "//Part B.2" read and sort
+  
+  while(!feof(srcFP)) {
+
+    // the first non-blank line that is not a comment has been read
+
+    int len = strlen(str);
+    if (len > 0) { 
+      sortABCarray(str, len);
+    }
+    
+    fgets(str, BUFSIZE, srcFP);
+
+    // Skip blank lines
+    if(( str[0] == '\n') || (str[0] == ' ') ) {
+      str[0] = '\0';
+      continue;
+    }
+
+    // Stop if we reach "//Part B.2"
+    if(strncmp(str, "//Part B.2", 10) == 0) {
+      break;
+    }
+
+  }
+
+
+  data = (long long *) malloc(numLines * sizeof(long long));
 
 
   if((destFP = fopen(argv[2], "w")) == NULL) {
@@ -142,3 +174,101 @@ char * sortABCarray(char *str, int len) {
     printf("Sorted data: %s\n", str);
     return str;
 }
+
+
+void TestSortABCarray() {
+    // Representative, non-duplicative set
+
+    char test1[]  = "ABACBACACBBAC";
+    char test1_expected[]  = "AAAAABBBBCCCC";
+
+    char test2[]  = "A";
+    char test2_expected[]  = "A";
+    char test3[]  = "B";
+    char test3_expected[]  = "B";
+    char test4[]  = "C";
+    char test4_expected[]  = "C";
+
+    char test5[]  = "AA";
+    char test5_expected[]  = "AA";
+    char test6[]  = "AB";
+    char test6_expected[]  = "AB";
+    char test7[]  = "AC";
+    char test7_expected[]  = "AC";
+    char test8[]  = "BC";
+    char test8_expected[]  = "BC";
+
+    char test9[]  = "AAB";
+    char test9_expected[]  = "AAB";
+    char test10[] = "ABB";
+    char test10_expected[] = "ABB";
+    char test11[] = "ACC";
+    char test11_expected[] = "ACC";
+
+    char test12[] = "ABC";
+    char test12_expected[] = "ABC";
+    char test13[] = "CBA";
+    char test13_expected[] = "ABC";
+
+    char test14[] = "AAABBBCCC";
+    char test14_expected[] = "AAABBBCCC";
+    char test15[] = "CCCBBBAAA";
+    char test15_expected[] = "AAABBBCCC";
+    char test16[] = "ABCABCABC";
+    char test16_expected[] = "AAABBBCCC";
+
+    char test17[] = "BBBBBBAAAAAA";
+    char test17_expected[] = "AAAAAABBBBBB";
+    char test18[] = "AAAAAACCCCCC";
+    char test18_expected[] = "AAAAAACCCCCC";
+
+    char test19[] = "AAAAABBBCCC";
+    char test19_expected[] = "AAAAABBBCCC";
+
+    sortABCarray(test1, strlen(test1));
+    assert(strcmp(test1, test1_expected) == 0);
+
+    sortABCarray(test2, strlen(test2));
+    assert(strcmp(test2, test2_expected) == 0);
+    sortABCarray(test3, strlen(test3));
+    assert(strcmp(test3, test3_expected) == 0);
+    sortABCarray(test4, strlen(test4));
+    assert(strcmp(test4, test4_expected) == 0);
+
+    sortABCarray(test5, strlen(test5));
+    assert(strcmp(test5, test5_expected) == 0);
+    sortABCarray(test6, strlen(test6));
+    assert(strcmp(test6, test6_expected) == 0);
+    sortABCarray(test7, strlen(test7));
+    assert(strcmp(test7, test7_expected) == 0);
+    sortABCarray(test8, strlen(test8));
+    assert(strcmp(test8, test8_expected) == 0);
+
+    sortABCarray(test9, strlen(test9));
+    assert(strcmp(test9, test9_expected) == 0);
+    sortABCarray(test10, strlen(test10));
+    assert(strcmp(test10, test10_expected) == 0);
+    sortABCarray(test11, strlen(test11));
+    assert(strcmp(test11, test11_expected) == 0);
+
+    sortABCarray(test12, strlen(test12));
+    assert(strcmp(test12, test12_expected) == 0);
+    sortABCarray(test13, strlen(test13));
+    assert(strcmp(test13, test13_expected) == 0);
+
+    sortABCarray(test14, strlen(test14));
+    assert(strcmp(test14, test14_expected) == 0);
+    sortABCarray(test15, strlen(test15));
+    assert(strcmp(test15, test15_expected) == 0);
+    sortABCarray(test16, strlen(test16));
+    assert(strcmp(test16, test16_expected) == 0);
+
+    sortABCarray(test17, strlen(test17));
+    assert(strcmp(test17, test17_expected) == 0);
+    sortABCarray(test18, strlen(test18));
+    assert(strcmp(test18, test18_expected) == 0);
+
+    sortABCarray(test19, strlen(test19));
+    assert(strcmp(test19, test19_expected) == 0);
+}
+

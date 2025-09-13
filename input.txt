@@ -1,6 +1,7 @@
 //Part B.1 (input sequence)
 
 ABACBACACBBAC
+BBACACABCCAB
 
  
 //Part B.2
