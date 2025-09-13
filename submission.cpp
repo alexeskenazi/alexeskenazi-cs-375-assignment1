@@ -6,6 +6,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <cstring>
+
+using namespace std;
 
 long long findNumLines(FILE *fp);
 
@@ -20,7 +23,7 @@ long long numLines, *data;
 int main(int argc, char *argv[]) {
 
   int i;
-  char str[100];
+  char str[1000];
 
   if(argc!=3) {
     printf("Usage: progname <input_file> <output_file>");
@@ -31,9 +34,6 @@ int main(int argc, char *argv[]) {
     perror("Error opening input file");
     exit(0);
   }
-
-
-
   
   numLines = findNumLines(srcFP); //
   
@@ -41,16 +41,28 @@ int main(int argc, char *argv[]) {
 
   for(i=0; i<numLines; i++) {
     fgets(str, 100, srcFP);
-    sscanf(str, "%lld", &(data[i]));
+
+    // Skip blank lines and lines with // only
+    if((str[0] == '\n') || ((str[0] == '/') && (str[1] == '/'))) {
+      i--;
+      continue;
+    }
+
+    // sscanf(str, "%lld", &(data[i]));
+    // The first line should container the input string for sorting
+    break;
   }
+
+
+  int len = strlen(str);
+  sortABCarray(str, len);
+
 
   if((destFP = fopen(argv[2], "w")) == NULL) {
     perror("Error opening output file");
     exit(0);
   }
 
-  char testData[] = "ABACBACACBBAC";
-  sortABCarray(testData, 13);
   
   writeDestFile(destFP);
 
@@ -62,6 +74,7 @@ int writeDestFile(FILE *fp) {
   long long i;
   for(i = 0; i < numLines; i++)
     fprintf(fp, "%lld\n", data[i]*data[i]);
+  return 0;
 }
 
 //returns file size as number of lines in the file
@@ -86,38 +99,46 @@ long long findNumLines(FILE *fp) {
 }   
 
 
+
+// Suppose that we have an array of n data records to sort and that the key of each record
+// has the value either A, B, or C. Give a linear-time algorithm with an appropriate data 
+// structure for sorting the n data records in place (A…B….C…). 
+// Use no storage of more than constant size in addition to the storage provided by 
+// the array. Show the worst-case time complexity and the space cost.
+// For example: input ABACBACACBBAC  output AAAAABBBBCCCC
+
 void swapChars(char &x, char &y) {
     char temp = x;
     x = y;
-    y = temp;
-    printf("Swapped %c and %c\n", x, y);
+    y = temp; 
 }
 
-// Suppose that we have an array of n data records to sort and that the key of each record has the value either A, B, or C. Give a linear-time algorithm with an appropriate data structure for sorting the n data records in place (A…B….C…). Use no storage of more than constant size in addition to the storage provided by the array. Show the worst-case time complexity and the space cost.
-// For example: input ABACBACACBBAC  output AAAAABBBBCCCC
+char * sortABCarray(char *str, int len) {
+    // Remove newline if present
+    if (len > 0 && str[len-1] == '\n') {
+        str[len-1] = '\0';
+        len--;
+    }
+    
+    int low = 0;       
+    int mid = 0;       
+    int high = len - 1;  
 
-char * sortABCarray(char *data, int numLines) {
-    int low = 0;       // next position for 'A'
-    int mid = 0;       // current element
-    int high = numLines - 1;  // next position for 'C'
+    printf("Initial data: %s\n", str);
 
-    printf("Initial data: %s\n", data);
-
-    while (mid <= high) {
-        if (data[mid] == 'A') {
-            swapChars(data[low], data[mid]);
-            ++low;
-            ++mid;
-        } else if (data[mid] == 'B') {
-            ++mid;
-        } else if (data[mid] == 'C'){
-            swapChars(data[mid], data[high]);
-            --high;
-        } else {
-            printf("Error: Invalid character in input data\n");
-            exit(1);
+    while (mid <= high) {  
+        switch (str[mid]) {
+            case 'A':
+                swapChars(str[low++], str[mid++]);
+                break;
+            case 'B':
+                mid++;
+                break;
+            case 'C':
+                swapChars(str[mid], str[high--]);  
+                break;
         }
     }
-    printf("Sorted data: %s\n", data);
-    return data;
+    printf("Sorted data: %s\n", str);
+    return str;
 }
