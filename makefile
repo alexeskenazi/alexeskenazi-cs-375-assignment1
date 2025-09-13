@@ -17,7 +17,10 @@ binary-search.o: binary-search.cpp binary-search.h
 	$(CXX) $(CXXFLAGS) -c binary-search.cpp
 
 run: clean submission
-	./submission test_input.txt test_output.txt
+	./submission input.txt output.txt
+
+test: clean submission
+	./submission test_input.txt test_output.txt test
 
 clean:
 	rm -f *.o submission

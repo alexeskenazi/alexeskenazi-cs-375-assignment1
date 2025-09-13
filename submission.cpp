@@ -28,15 +28,20 @@ long long numLines, *data;
 
 int main(int argc, char *argv[]) {
 
-  // testSortABCarray();
-  // testFindKeyAsDifference();
-
   int i;
   char str[BUFSIZE];
 
-  if(argc!=3) {
+  if(argc<3) {
     printf("Usage: progname <input_file> <output_file>");
     exit(0);
+  }
+
+  if(argc>3) {
+    if(strcmp(argv[3], "test") == 0) {
+      testSortABCarray();
+      testFindKeyAsDifference();
+      exit(0);
+    }
   }
   
   if((srcFP =fopen(argv[1], "r")) == NULL) {
