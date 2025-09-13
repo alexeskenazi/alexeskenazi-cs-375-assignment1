@@ -1,13 +1,8 @@
-// This program reads an inputfile of numbers.
-// The input file has on number per line.
-// The program prints out the squares of the input file numbers
-// to the output file.
-// The output file has on numner per line.
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <cstring>
 #include <cassert>
+#include <cmath>
 
 using namespace std;
 
@@ -22,6 +17,10 @@ void testSortABCarray();
 void testFindKeyAsDifference();
 
 bool findKeyAsDifference(FILE *fp, long long *data, int numLines);
+
+long long mergeSortArray(long long arr[], int size);
+
+int binarySearch(long long arr[], int size, long long target, long long *operationCount);
 
 
 FILE *srcFP, *destFP;
@@ -321,35 +320,46 @@ void testSortABCarray() {
 // [14,  89,  18,  105,  23,   4,   35,   99,   67,  76,  198,   20,   5,  38,   55,   2,  30,   19,   487,  11,  40,  10,  13,  27,  22,   45,  37, 231, 46, 17,  731, 49,  167, 234, 59, 91, 179, 201]
 
 
+#include "sort.cpp"
+#include "binary-search.cpp"
+
 bool findKeyAsDifference(FILE *fp, long long *data, int numLines) {
     bool found = false;
     long long count = 0;
-
+    
+    
+    long long *sorted_data = (long long*)malloc(numLines * sizeof(long long));
     for (int i = 0; i < numLines; i++) {
-    
-      for (int j = 0; j < numLines; j++) {
-    
-        if (i != j) {
-    
-          long long diff = data[i] - data[j];
-    
-          for (int k = 0; k < numLines; k++) {
-            count++;
-    
-            if (k != i && k != j && data[k] == diff) {
-
-              if(fp) fprintf(fp,"%lld-%lld=%lld\n", data[i], data[j], diff);
-              printf("%lld-%lld=%lld\n", data[i], data[j], diff);
-              
-              found = true;
-    
-            }
-          }
-        }
-      }
+        sorted_data[i] = data[i];
     }
-
-    if(fp) fprintf(destFP, "\nRunning time: %lld\n", count);
+    
+    // Sort the array using merge sort. O(n log n)
+    long long sortOperations = mergeSortArray(sorted_data, numLines);
+    count += sortOperations;
+    
+    // For each pair (i,j), check if their difference exists in the array. O(n^2 log n)
+    for (int i = 0; i < numLines; i++) { // O(n)
+        for (int j = i + 1; j < numLines; j++) { // O(n)
+            count++;
+            
+            long long diff = sorted_data[j] - sorted_data[i];
+            
+            // Binary search for diff in the sorted array is O(log n)
+            long long binarySearchOps = 0;
+            int foundIndex = binarySearch(sorted_data, numLines, diff, &binarySearchOps);
+            count += binarySearchOps;
+            
+            if (foundIndex != -1) {
+                if (fp) fprintf(fp, "%lld-%lld=%lld\n", sorted_data[j], sorted_data[i], diff);
+                printf("%lld-%lld=%lld\n", sorted_data[j], sorted_data[i], diff);
+                found = true;
+            }
+        }
+    }
+    
+    free(sorted_data);
+    
+    if (fp) fprintf(destFP, "\nRunning time: %lld\n", count);
     printf("\nRunning time: %lld\n", count);
 
     return found;
