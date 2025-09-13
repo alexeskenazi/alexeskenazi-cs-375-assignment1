@@ -21,6 +21,10 @@ char * sortABCarray(char *data, int numLines);
 
 void TestSortABCarray();
 
+void testFindKeyAsDifference();
+
+void testFindKeyAsDifference();
+
 
 FILE *srcFP, *destFP;
 long long numLines, *data;
@@ -28,6 +32,7 @@ long long numLines, *data;
 int main(int argc, char *argv[]) {
 
   // TestSortABCarray();
+  testFindKeyAsDifference();
 
   int i;
   char str[BUFSIZE];
@@ -304,5 +309,48 @@ void TestSortABCarray() {
 
     sortABCarray(test19, strlen(test19));
     assert(strcmp(test19, test19_expected) == 0);
+}
+
+
+// B.2.  (12%) Given an array containing n keys, design an algorithm to determine 
+// whether there is such a key that is equal to the difference between the 
+// other two keys in the array. Explain the worst-case time complexity and space cost. 
+// (Your algorithm should be no worse than O(n2lgn). Implement your algorithm with a 
+// proper data structure and print out all the keys that are equal to the difference 
+// between the other two keys in the array, and print out the corresponding two keys; 
+// Print out the running time.
+
+// Example data for test:
+// [14,  89,  18,  105,  23,   4,   35,   99,   67,  76,  198,   20,   5,  38,   55,   2,  30,   19,   487,  11,  40,  10,  13,  27,  22,   45,  37, 231, 46, 17,  731, 49,  167, 234, 59, 91, 179, 201]
+
+
+bool findKeyAsDifference(long long *data, int numLines) {
+    bool found = false;
+
+    for (int i = 0; i < numLines; i++) {
+    
+      for (int j = 0; j < numLines; j++) {
+    
+        if (i != j) {
+    
+          long long diff = data[i] - data[j];
+    
+          for (int k = 0; k < numLines; k++) {
+    
+            if (k != i && k != j && data[k] == diff) {
+              printf("Found: %lld = %lld - %lld\n", diff, data[i], data[j]);
+              found = true;
+            }
+          }
+        }
+      }
+    }
+    return found;
+}
+
+void testFindKeyAsDifference() {
+    long long testData1[] = {14, 89, 18, 105, 23, 4, 35, 99, 67, 76, 198, 20, 5, 38, 55, 2, 30, 19, 487, 11, 40, 10, 13, 27, 22, 45, 37, 231, 46, 17, 731, 49, 167, 234, 59, 91, 179, 201};
+    int size1 = sizeof(testData1) / sizeof(testData1[0]);
+    findKeyAsDifference(testData1, size1);
 }
 
