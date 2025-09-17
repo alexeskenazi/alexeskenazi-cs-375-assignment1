@@ -8,21 +8,17 @@ using namespace std;
 
 #define BUFSIZE 1000
 
+// function prototypes
 long long findNumLines(FILE *fp);
-
 char * sortABCarray(FILE *fp, char *data, int numLines);
-
 void testSortABCarray();
-
 void testFindKeyAsDifference();
-
 bool findKeyAsDifference(FILE *fp, long long *data, int numLines);
-
 long long mergeSortArray(long long arr[], int size);
-
 int binarySearch(long long arr[], int size, long long target, long long *operationCount);
 
 
+// global variables
 FILE *srcFP, *destFP;
 long long numLines, *data;
 
@@ -31,11 +27,13 @@ int main(int argc, char *argv[]) {
   int i;
   char str[BUFSIZE];
 
+  // check command line args
   if(argc<3) {
     printf("Usage: progname <input_file> <output_file>");
     exit(0);
   }
 
+  // run tests if "test" argument provided
   if(argc>3) {
     if(strcmp(argv[3], "test") == 0) {
       testSortABCarray();
@@ -44,6 +42,7 @@ int main(int argc, char *argv[]) {
     }
   }
   
+  // open input and output files
   if((srcFP =fopen(argv[1], "r")) == NULL) {
     perror("Error opening input file");
     exit(0);
@@ -54,14 +53,15 @@ int main(int argc, char *argv[]) {
     exit(0);
   }
   
-  numLines = findNumLines(srcFP); //
+  // count lines in file
+  numLines = findNumLines(srcFP);
   
 
-  // Find the fist non-blank line that is not a comment
+  // find first real line (skip blanks and comments)
   for(i=0; i<numLines; i++) {
     fgets(str, BUFSIZE, srcFP);
 
-    // Skip blank lines and lines with // only
+    // skip blank lines and comments
     if((str[0] == '\n') || (str[0] == ' ') || ((str[0] == '/') && (str[1] == '/'))) {
       i--;
       continue;
@@ -71,15 +71,13 @@ int main(int argc, char *argv[]) {
   }
 
 
-  // while the read input is not empty or "//Part B.2" read and sort
-
+  // Part B.1 - sort ABC strings
   fprintf(destFP, "//Part B.1 \n\n");
   printf("//Part B.1 \n\n");
   
   while(!feof(srcFP)) {
 
-    // the first non-blank line that is not a comment has been read
-
+    // process the line we already read
     int len = strlen(str);
     if (len > 0) { 
       sortABCarray(destFP, str, len);
@@ -87,43 +85,41 @@ int main(int argc, char *argv[]) {
     
     fgets(str, BUFSIZE, srcFP);
 
-    // Skip blank lines
+    // skip blank lines
     if(( str[0] == '\n') || (str[0] == ' ') ) {
       str[0] = '\0';
       continue;
     }
 
-    // Stop if we reach "//Part B.2"
+    // stop when we hit Part B.2
     if(strncmp(str, "//Part B.2", 10) == 0) {
       break;
     }
 
   }
 
-  // We are at the beginning of Part B.2
+  // Part B.2 - read numbers into array
   data = (long long *) malloc(numLines * sizeof(long long));
   int dataIndex = 0;
 
-
-  // Read the data from the input file
+  // read numbers from file
   for(i=0; i<numLines; i++) {
 
     fgets(str, 100, srcFP);
 
-    // Skip blank lines and lines with // only
+    // skip blank lines and comments
     if((str[0] == '\n') || (str[0] == ' ') || ((str[0] == '/') && (str[1] == '/'))) {
       i--;
       continue;
     }
 
-    // stop eof file
+    // stop at end of file
     if(feof(srcFP)) {
       break;
     }
 
-    // Read a number from the input file
+    // convert string to number and store
     sscanf(str, "%lld", &(data[dataIndex]));
-    // printf("Read data[%d]=%lld\n", dataIndex, data[dataIndex]);
     dataIndex++;
   }
 
@@ -137,19 +133,21 @@ int main(int argc, char *argv[]) {
 }
 
 
-//returns file size as number of lines in the file
+// count how many lines are in the file
 long long findNumLines(FILE *fp) {
 
   long long numLines = 0;
   char str[100];
 
+  // count each line
   while(!feof(fp)) {
     fgets(str, 100, fp);
     numLines++;
   }
   
-  numLines--;//the above increments count even when EOF reached
+  numLines--; // fix off-by-one from EOF
   
+  // go back to start of file
   if(fseek(fp, 0L, SEEK_SET) == EOF) {
     perror("Error while seeking to begining of file");
     exit(0);
@@ -167,26 +165,30 @@ long long findNumLines(FILE *fp) {
 // the array. Show the worst-case time complexity and the space cost.
 // For example: input ABACBACACBBAC  output AAAAABBBBCCCC
 
+// swap two characters
 void swapChars(char &x, char &y) {
     char temp = x;
     x = y;
     y = temp; 
 }
 
+// sort A's, B's, C's using 3-way partitioning
 char * sortABCarray(FILE *fp, char *str, int len) {
     long long count = 0;
-    // Remove newline if present
+    // clean up newline
     if (len > 0 && str[len-1] == '\n') {
         str[len-1] = '\0';
         len--;
     }
     
+    // three pointers for partitioning
     int low = 0;       
     int mid = 0;       
     int high = len - 1;  
 
     printf("I %s\n", str);
 
+    // partition into A's, B's, C's
     while (mid <= high) {  
         count++;
         switch (str[mid]) {
@@ -201,6 +203,7 @@ char * sortABCarray(FILE *fp, char *str, int len) {
                 break;
         }
     }
+    // output results
     if(fp) fprintf(destFP, "%s\n\n", str);
     if(fp) fprintf(destFP, "Running time: %lld\n", count);
 
@@ -328,32 +331,35 @@ void testSortABCarray() {
 #include "sort.h"
 #include "binary-search.h"
 
+// find if any key equals difference of two other keys
 bool findKeyAsDifference(FILE *fp, long long *data, int numLines) {
     bool found = false;
     long long count = 0;
     
-    
+    // copy data for sorting
     long long *sorted_data = (long long*)malloc(numLines * sizeof(long long));
     for (int i = 0; i < numLines; i++) {
         sorted_data[i] = data[i];
     }
     
-    // Sort the array using merge sort. O(n log n)
+    // sort first - O(n log n)
     long long sortOperations = mergeSortArray(sorted_data, numLines);
     count += sortOperations;
     
-    // For each pair (i,j), check if their difference exists in the array. O(n^2 log n)
-    for (int i = 0; i < numLines; i++) { // O(n)
-        for (int j = i + 1; j < numLines; j++) { // O(n)
+    // check all pairs - O(n^2 log n)
+    for (int i = 0; i < numLines; i++) {
+        for (int j = i + 1; j < numLines; j++) {
             count++;
             
+            // calculate difference
             long long diff = sorted_data[j] - sorted_data[i];
             
-            // Binary search for diff in the sorted array is O(log n)
+            // search for the difference - O(log n)
             long long binarySearchOps = 0;
             int foundIndex = binarySearch(sorted_data, numLines, diff, &binarySearchOps);
             count += binarySearchOps;
             
+            // print if found
             if (foundIndex != -1) {
                 if (fp) fprintf(fp, "%lld-%lld=%lld\n", sorted_data[j], sorted_data[i], diff);
                 printf("%lld-%lld=%lld\n", sorted_data[j], sorted_data[i], diff);
@@ -364,6 +370,7 @@ bool findKeyAsDifference(FILE *fp, long long *data, int numLines) {
     
     free(sorted_data);
     
+    // print timing info
     if (fp) fprintf(destFP, "\nRunning time: %lld\n", count);
     printf("\nRunning time: %lld\n", count);
     printf("for n= %d, n^2 log n: %lld\n", numLines, (long long)(numLines * numLines * log2(numLines)));
