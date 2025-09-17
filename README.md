@@ -76,7 +76,7 @@ Find numbers in the array where one number equals the difference of two other nu
 - Nested loops: O(n²)
 - Binary search inside loops: O(log n)
 
-- Total: O(n log n) + ( O(n²)O(n log n)) -> O(n²)O(n log n) -> O(n² log n)
+- Total: O(n log n) + ( O(n²)O(log n)) -> O(n²)O(log n) -> O(n² log n)
 - **Total: O(n² log n)**
 
 **Space Complexity:** O(n) - for the sorted copy of the array
