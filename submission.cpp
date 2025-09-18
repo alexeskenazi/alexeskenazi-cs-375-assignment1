@@ -8,7 +8,7 @@ using namespace std;
 
 #define BUFSIZE 1000
 
-// function prototypes
+
 long long findNumLines(FILE *fp);
 char * sortABCarray(FILE *fp, char *data, int numLines);
 void testSortABCarray();
@@ -18,7 +18,7 @@ long long mergeSortArray(long long arr[], int size);
 int binarySearch(long long arr[], int size, long long target, long long *operationCount);
 
 
-// global variables
+
 FILE *srcFP, *destFP;
 long long numLines, *data;
 
@@ -104,6 +104,10 @@ int main(int argc, char *argv[]) {
 
   // read numbers from file
   for(i=0; i<numLines; i++) {
+
+    for(int j=0; j<100; j++) {
+      str[j] = '\0';
+    }
 
     fgets(str, 100, srcFP);
 
@@ -214,7 +218,6 @@ char * sortABCarray(FILE *fp, char *str, int len) {
 
 
 void testSortABCarray() {
-    // Representative, non-duplicative set
 
     char test0[]  = "";
     char test0_expected[]  = "";
@@ -347,14 +350,14 @@ bool findKeyAsDifference(FILE *fp, long long *data, int numLines) {
     count += sortOperations;
     
     // check all pairs - O(n^2 log n)
-    for (int i = 0; i < numLines; i++) {
-        for (int j = i + 1; j < numLines; j++) {
+    for (int i = 0; i < numLines; i++) { // add O(n) times
+        for (int j = i + 1; j < numLines; j++) { // add O(n) times
             count++;
             
             // calculate difference
             long long diff = sorted_data[j] - sorted_data[i];
             
-            // search for the difference - O(log n)
+            // search for the difference - adds O(log n)
             long long binarySearchOps = 0;
             int foundIndex = binarySearch(sorted_data, numLines, diff, &binarySearchOps);
             count += binarySearchOps;
