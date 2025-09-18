@@ -33,9 +33,10 @@ int main(int argc, char *argv[]) {
     exit(0);
   }
 
-  // run tests if "test" argument provided
+  // extra: run tests if "test" argument provided as the 
   if(argc>3) {
     if(strcmp(argv[3], "test") == 0) {
+      // run the tests
       testSortABCarray();
       testFindKeyAsDifference();
       exit(0);
@@ -193,17 +194,22 @@ char * sortABCarray(FILE *fp, char *str, int len) {
         count++;
         switch (str[mid]) {
             case 'A':
+                // swap the left with the middle and 
+                // move both to the right
                 swapChars(str[low++], str[mid++]);
                 break;
             case 'B':
+                // don't swap and move right to the next char
                 mid++;
                 break;
             case 'C':
+                // swap the middle with the right and
+                // move the right to the left
                 swapChars(str[mid], str[high--]);
                 break;
         }
     }
-    // output results
+    // output results - count the number of operations instead of time
     if(fp) fprintf(destFP, "%s\n\n", str);
     if(fp) fprintf(destFP, "Running time: %lld\n", count);
 
@@ -344,10 +350,10 @@ bool findKeyAsDifference(FILE *fp, long long *data, int numLines) {
     
     // sort first - O(n log n)
     long long sortOperations = mergeSortArray(sorted_data, numLines);
-    count += sortOperations;
+    count += sortOperations; // add the sort operation count to our local count
     
     // check all pairs - O(n^2 log n)
-    for (int i = 0; i < numLines; i++) {
+    for (int i = 0; i < numLines; i++) { // for each item in the aa
         for (int j = i + 1; j < numLines; j++) {
             count++;
             
